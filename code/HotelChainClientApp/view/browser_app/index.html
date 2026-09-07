@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HotelChain Booking</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">H</span>
+      <span>HotelChain</span>
+    </div>
+    <nav class="nav-tabs" aria-label="Main navigation">
+      <button class="nav-tab active" data-view="browse">Stays</button>
+      <button class="nav-tab" data-view="reservations" data-role="employee">Reservations</button>
+      <button class="nav-tab" data-view="rooms" data-role="employee">Rooms</button>
+      <button class="nav-tab" data-view="reviews" data-role="client">My reviews</button>
+      <button class="nav-tab" data-view="stats" data-role="manager">Stats</button>
+      <button class="nav-tab" data-view="users" data-role="admin employee">Users</button>
+      <button class="nav-tab" data-view="notifications" data-role="admin client">Notifications</button>
+    </nav>
+    <div class="auth-strip">
+      <select id="languageSelect" class="language-select" aria-label="Language">
+        <option value="en">EN</option>
+        <option value="fr">FR</option>
+        <option value="es">ES</option>
+      </select>
+      <span id="sessionLabel" class="session-label">Guest</span>
+      <button id="openLoginBtn" class="ghost-btn">Sign in</button>
+      <button id="openSignupBtn" class="outline-btn">Register</button>
+      <button id="logoutBtn" class="outline-btn hidden">Sign out</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="search-band">
+      <div class="search-copy">
+        <h1>Find your next stay</h1>
+        <p>Hotels, rooms, reviews, reservations and role-based workflows in one place.</p>
+      </div>
+      <form id="searchForm" class="booking-search">
+        <label>
+          Hotel
+          <select id="hotelFilter">
+            <option value="">All hotels</option>
+          </select>
+        </label>
+        <label>
+          Location
+          <input id="locationFilter" type="text" placeholder="Cluj-Napoca">
+        </label>
+        <label>
+          Check-in
+          <input id="checkInFilter" type="date">
+        </label>
+        <label>
+          Check-out
+          <input id="checkOutFilter" type="date">
+        </label>
+        <label>
+          Max price
+          <input id="priceFilter" type="number" min="0" placeholder="700">
+        </label>
+        <button type="submit" class="primary-btn">Search</button>
+      </form>
+    </section>
+
+    <section id="browse" class="view active-view">
+      <div class="section-head">
+        <div>
+          <h2>Available stays</h2>
+          <p id="resultsMeta">Live availability from the room and reservation services.</p>
+        </div>
+        <button id="loadReviewsBtn" class="light-btn">Show reviews</button>
+      </div>
+      <div id="hotelHighlights" class="hotel-highlights"></div>
+      <div id="roomGrid" class="room-grid"></div>
+      <div id="reviewPanel" class="review-panel hidden">
+        <h3>Guest reviews</h3>
+        <div id="reviewList" class="review-list"></div>
+      </div>
+    </section>
+
+    <section id="reservations" class="view">
+      <div class="section-head">
+        <div>
+          <h2>Reservations</h2>
+          <p>Create bookings and export reservation lists.</p>
+        </div>
+      </div>
+      <form id="reservationForm" class="admin-form">
+        <input name="hotel_id" type="number" placeholder="Hotel ID" required>
+        <input name="room_id" type="number" placeholder="Room ID" required>
+        <input name="client_name" type="text" placeholder="Client name" required>
+        <input name="client_email" type="email" placeholder="Client email" required>
+        <input name="client_phone" type="tel" placeholder="Client phone">
+        <input name="start_date" type="date" required>
+        <input name="end_date" type="date" required>
+        <button class="primary-btn" type="submit">Reserve</button>
+      </form>
+      <div class="toolbar">
+        <select id="reservationExportFormat">
+          <option value="csv">CSV</option>
+          <option value="json">JSON</option>
+          <option value="xml">XML</option>
+          <option value="doc">DOC</option>
+        </select>
+        <button id="exportReservationsBtn" class="light-btn">Export reservations</button>
+      </div>
+      <div id="reservationTable" class="data-table"></div>
+    </section>
+
+    <section id="rooms" class="view">
+      <div class="section-head">
+        <div>
+          <h2>Rooms CRUD</h2>
+          <p>Manage rooms from the browser interface.</p>
+        </div>
+      </div>
+      <form id="roomForm" class="admin-form">
+        <input name="id" type="number" placeholder="Room ID for update/delete">
+        <input name="hotel_id" type="number" placeholder="Hotel ID" required>
+        <input name="room_number" type="text" placeholder="Room number" required>
+        <input name="location" type="text" placeholder="Location" required>
+        <input name="floor" type="number" placeholder="Floor" value="1">
+        <input name="room_type" type="text" placeholder="Room type">
+        <input name="price_per_night" type="number" placeholder="Price/night" required>
+        <input name="position" type="text" placeholder="View">
+        <input name="facilities" type="text" placeholder="wifi,tv,ac">
+        <input name="image_urls" type="text" placeholder="Image URLs">
+        <input name="max_guests" type="number" placeholder="Max guests" value="1">
+        <select name="is_available">
+          <option value="true">Available</option>
+          <option value="false">Unavailable</option>
+        </select>
+        <button class="primary-btn" data-room-action="create" type="button">Create</button>
+        <button class="light-btn" data-room-action="update" type="button">Update</button>
+        <button class="danger-btn" data-room-action="delete" type="button">Delete</button>
+      </form>
+      <div class="toolbar">
+        <select id="roomHotelFilter">
+          <option value="">All hotels</option>
+        </select>
+        <button id="loadRoomsBtn" class="light-btn">Load rooms</button>
+      </div>
+      <div id="roomTable" class="data-table"></div>
+    </section>
+
+    <section id="reviews" class="view">
+      <div class="section-head">
+        <div>
+          <h2>My reviews</h2>
+          <p>Only rooms reserved by the logged client appear here.</p>
+        </div>
+      </div>
+      <form id="reviewForm" class="admin-form">
+        <select id="reviewHotelSelect" required></select>
+        <select id="reviewRoomSelect" required></select>
+        <input name="rating" type="number" min="1" max="5" value="5">
+        <input name="comment" type="text" placeholder="Share your stay">
+        <button class="primary-btn" type="submit">Add review</button>
+      </form>
+      <div id="myReviewList" class="review-list"></div>
+    </section>
+
+    <section id="stats" class="view">
+      <div class="section-head">
+        <div>
+          <h2>Statistics</h2>
+          <p>Operational charts for managers.</p>
+        </div>
+      </div>
+      <div class="stat-actions">
+        <button class="light-btn" data-stat-service="room" data-stat="availability">Availability</button>
+        <button class="light-btn" data-stat-service="room" data-stat="position">Position</button>
+        <button class="light-btn" data-stat-service="room" data-stat="average-price-hotel">Average price</button>
+        <button class="light-btn" data-stat-service="reservation" data-stat="status">Reservation status</button>
+      </div>
+      <div id="statsGrid" class="stats-grid"></div>
+    </section>
+
+    <section id="users" class="view">
+      <div class="section-head">
+        <div>
+          <h2>Users</h2>
+          <p>Client and authenticated user administration.</p>
+        </div>
+      </div>
+      <form id="userForm" class="admin-form">
+        <input name="id" type="number" placeholder="User ID for update/delete">
+        <input name="username" type="text" placeholder="Username" required>
+        <input name="password" type="password" placeholder="Password">
+        <select name="role">
+          <option value="client">client</option>
+          <option value="employee">employee</option>
+          <option value="manager">manager</option>
+          <option value="admin">admin</option>
+        </select>
+        <input name="full_name" type="text" placeholder="Full name">
+        <input name="email" type="email" placeholder="Email">
+        <input name="phone" type="tel" placeholder="Phone">
+        <button class="primary-btn" data-user-action="create" type="button">Create</button>
+        <button class="light-btn" data-user-action="update" type="button">Update</button>
+        <button class="danger-btn" data-user-action="delete" type="button">Delete</button>
+      </form>
+      <div class="toolbar">
+        <select id="userRoleFilter">
+          <option value="">All roles</option>
+          <option value="client">client</option>
+          <option value="employee">employee</option>
+          <option value="manager">manager</option>
+          <option value="admin">admin</option>
+        </select>
+        <select id="userExportFormat">
+          <option value="csv">CSV</option>
+          <option value="json">JSON</option>
+          <option value="xml">XML</option>
+          <option value="doc">DOC</option>
+        </select>
+        <button id="loadUsersBtn" class="light-btn">Load users</button>
+        <button id="exportUsersBtn" class="light-btn">Export users</button>
+      </div>
+      <div id="userTable" class="data-table"></div>
+    </section>
+
+    <section id="notifications" class="view">
+      <div class="section-head">
+        <div>
+          <h2>Notifications</h2>
+          <p>Authentication-change notifications sent through email, SMS and WhatsApp.</p>
+        </div>
+        <button id="loadNotificationsBtn" class="light-btn">Load notifications</button>
+      </div>
+      <div id="notificationTable" class="data-table"></div>
+    </section>
+  </main>
+
+  <dialog id="loginDialog" class="auth-dialog">
+    <form id="loginForm" method="dialog">
+      <h2>Sign in</h2>
+      <input name="username" type="text" placeholder="Username" required>
+      <input name="password" type="password" placeholder="Password" required>
+      <div class="dialog-actions">
+        <button value="cancel" class="light-btn">Cancel</button>
+        <button class="primary-btn" value="default">Sign in</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="signupDialog" class="auth-dialog">
+    <form id="signupForm" method="dialog">
+      <h2>Create client account</h2>
+      <input name="username" type="text" placeholder="Username" required>
+      <input name="password" type="password" placeholder="Password" required>
+      <input name="full_name" type="text" placeholder="Full name">
+      <input name="email" type="email" placeholder="Email">
+      <input name="phone" type="tel" placeholder="Phone">
+      <div class="dialog-actions">
+        <button value="cancel" class="light-btn">Cancel</button>
+        <button class="primary-btn" value="default">Register</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast hidden"></div>
+  <script src="./app.js"></script>
+</body>
+</html>

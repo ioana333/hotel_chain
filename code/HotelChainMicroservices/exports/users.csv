@@ -1,0 +1,6 @@
+id,username,role,full_name,email,phone
+1,client,client,Client Demo,client@example.com,0700000001
+2,angajat,employee,Angajat Demo,angajat@example.com,0700000002
+3,manager,manager,Manager Demo,manager@example.com,0700000003
+4,admin,admin,Administrator Demo,admin@example.com,0700000004
+5,ioana,client,Paucean Ioana,pauceanioana3@gmail.com,0799824800
